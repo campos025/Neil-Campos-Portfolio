@@ -23,7 +23,7 @@
 /* ---------- 1. DESIGN TOKENS ---------- */
 :root {
   /* Color palette */
-  --color-bg: #060f22;          /* page background — cool paper, not cream */
+  --color-bg: #030405;          /* page background — cool paper, not cream */
   --color-bg-alt: #EEF1F5;      /* alternate section background */
   --color-surface: #FFFFFF;     /* cards */
   --color-border: #E1E5EB;
