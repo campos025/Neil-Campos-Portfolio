@@ -1,14 +1,4 @@
-/* ==========================================================================
-   NEIL MARVIN CAMPOS — PORTFOLIO SCRIPT
-   Vanilla JS only. Handles:
-     1. Sticky navbar shadow on scroll
-     2. Mobile hamburger menu
-     3. Active nav-link highlighting while scrolling (IntersectionObserver)
-     4. Smooth scroll + closing mobile menu on link click
-     5. Scroll-reveal fade-in animations (IntersectionObserver)
-     6. Back-to-top button
-     7. Footer year
-   ========================================================================== */
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
