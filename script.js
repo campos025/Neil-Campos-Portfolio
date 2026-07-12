@@ -1,4 +1,16 @@
-
+/* ==========================================================================
+   NEIL MARVIN CAMPOS — PORTFOLIO SCRIPT
+   Vanilla JS only. Handles:
+     1. Sticky navbar shadow on scroll
+     2. Mobile hamburger menu
+     3. Active nav-link highlighting while scrolling (IntersectionObserver)
+     4. Smooth scroll + closing mobile menu on link click
+     5. Scroll-reveal fade-in animations (IntersectionObserver)
+     6. Back-to-top button
+     7. Footer year
+     8. Project filter tabs
+     9. Project lightbox modal
+   ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -148,4 +160,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- 7. Footer year ---------- */
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* ---------- 8. Project filter tabs ---------- */
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+
+      // Toggle active state on the filter buttons
+      filterButtons.forEach((btn) => btn.classList.remove('is-active'));
+      button.classList.add('is-active');
+
+      // Show only the cards matching the selected category
+      projectCards.forEach((card) => {
+        const matches = filter === 'all' || card.dataset.category === filter;
+        card.classList.toggle('is-hidden', !matches);
+      });
+    });
+  });
+
+  /* ---------- 9. Project lightbox modal ---------- */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxDesc = document.getElementById('lightbox-desc');
+  const lightboxLink = document.getElementById('lightbox-link');
+  let lastFocusedCard = null;
+
+  function openLightbox(card) {
+    lastFocusedCard = card;
+    lightboxTitle.textContent = card.dataset.title || 'Project';
+    lightboxDesc.textContent = card.dataset.desc || '';
+
+    const link = card.dataset.link;
+    if (link) {
+      lightboxLink.href = link;
+      lightboxLink.classList.remove('is-hidden');
+    } else {
+      lightboxLink.classList.add('is-hidden');
+    }
+
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+    lightbox.querySelector('.lightbox__close').focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocusedCard) lastFocusedCard.focus();
+  }
+
+  projectCards.forEach((card) => {
+    card.addEventListener('click', () => openLightbox(card));
+  });
+
+  lightbox.querySelectorAll('[data-close-lightbox]').forEach((el) => {
+    el.addEventListener('click', closeLightbox);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+      closeLightbox();
+    }
+  });
 });

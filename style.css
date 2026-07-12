@@ -12,18 +12,19 @@
      7. About
      8. Skills
      9. Experience (ticket log)
-     10. Education & certifications
-     11. Contact
-     12. Footer
-     13. Back to top
-     14. Scroll-reveal animation
-     15. Responsive breakpoints
+     10. Projects / portfolio (grid + lightbox)
+     11. Education & certifications
+     12. Contact
+     13. Footer
+     14. Back to top
+     15. Scroll-reveal animation
+     16. Responsive breakpoints
    ========================================================================== */
 
 /* ---------- 1. DESIGN TOKENS ---------- */
 :root {
   /* Color palette */
-  --color-bg: #030405;          /* page background — cool paper, not cream */
+  --color-bg: #F6F7F9;          /* page background — cool paper, not cream */
   --color-bg-alt: #EEF1F5;      /* alternate section background */
   --color-surface: #FFFFFF;     /* cards */
   --color-border: #E1E5EB;
@@ -362,16 +363,32 @@ button:focus-visible {
   align-items: center;
 }
 
+.hero__intro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hero__portrait {
+  width: 112px;
+  height: 112px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--color-surface);
+  box-shadow: 0 14px 28px -14px rgba(16, 25, 46, 0.35), 0 0 0 1px var(--color-border);
+}
+
 .hero__name {
-  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
   color: var(--color-ink);
 }
 
 .hero__role {
   font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
   color: var(--color-accent-dark);
-  margin-top: var(--space-3);
+  margin-top: var(--space-2);
   font-weight: 500;
 }
 
@@ -704,7 +721,176 @@ button:focus-visible {
   background: var(--color-accent);
 }
 
-/* ---------- 10. EDUCATION & CERTIFICATIONS ---------- */
+/* ---------- 10. PROJECTS / PORTFOLIO ---------- */
+.projects__intro {
+  color: var(--color-ink-muted);
+  max-width: 55ch;
+  font-size: 1.02rem;
+  margin-top: calc(var(--space-5) * -1 + var(--space-2));
+  margin-bottom: var(--space-4);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: var(--space-4);
+}
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink-muted);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.filter-btn:hover { border-color: var(--color-accent); color: var(--color-accent-dark); }
+.filter-btn.is-active {
+  background: var(--color-navy-panel);
+  border-color: var(--color-navy-panel);
+  color: #fff;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  padding: 0;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-accent);
+  box-shadow: 0 18px 34px -18px rgba(16,25,46,0.3);
+}
+.project-card.is-hidden { display: none; }
+
+.project-card__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  color: var(--color-ink-faint);
+}
+.project-card__thumb--placeholder {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-bg-alt),
+    var(--color-bg-alt) 10px,
+    var(--color-surface) 10px,
+    var(--color-surface) 20px
+  );
+  border-bottom: 1px solid var(--color-border);
+}
+
+.project-card__body {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.project-card__tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-dark);
+}
+.project-card__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--color-ink);
+}
+.project-card__desc {
+  font-size: 0.85rem;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+}
+
+/* Lightbox modal for project detail view */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+}
+.lightbox.is-open { opacity: 1; visibility: visible; }
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 25, 46, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.lightbox__panel {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  max-width: 480px;
+  width: 100%;
+  padding: var(--space-4);
+  transform: translateY(16px) scale(0.98);
+  transition: transform var(--transition-med);
+  box-shadow: 0 40px 70px -30px rgba(16,25,46,0.5);
+}
+.lightbox.is-open .lightbox__panel { transform: translateY(0) scale(1); }
+
+.lightbox__close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--color-ink-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.lightbox__close:hover { background: var(--color-bg-alt); color: var(--color-ink); }
+
+.lightbox__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-alt);
+  color: var(--color-ink-faint);
+  margin-bottom: var(--space-3);
+}
+
+.lightbox__title { font-size: 1.3rem; margin-bottom: var(--space-2); }
+.lightbox__desc { color: var(--color-ink-muted); font-size: 0.95rem; margin-bottom: var(--space-3); }
+.lightbox__link.is-hidden { display: none; }
+
+/* ---------- 11. EDUCATION & CERTIFICATIONS ---------- */
 .credentials-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -748,7 +934,7 @@ button:focus-visible {
   margin-top: 0.3rem;
 }
 
-/* ---------- 11. CONTACT ---------- */
+/* ---------- 12. CONTACT ---------- */
 .contact {
   background: radial-gradient(circle at 20% 0%, var(--color-navy-panel-alt), var(--color-navy-panel) 70%);
 }
@@ -794,7 +980,7 @@ button:focus-visible {
   word-break: break-word;
 }
 
-/* ---------- 12. FOOTER ---------- */
+/* ---------- 13. FOOTER ---------- */
 .footer {
   background: var(--color-navy-panel);
   color: rgba(255,255,255,0.6);
@@ -815,7 +1001,7 @@ button:focus-visible {
 .footer__links a { transition: color var(--transition-fast); }
 .footer__links a:hover { color: #fff; }
 
-/* ---------- 13. BACK TO TOP ---------- */
+/* ---------- 14. BACK TO TOP ---------- */
 .back-to-top {
   position: fixed;
   right: var(--space-3);
@@ -843,7 +1029,7 @@ button:focus-visible {
 }
 .back-to-top:hover { background: var(--color-accent-dark); }
 
-/* ---------- 14. SCROLL-REVEAL ANIMATION ---------- */
+/* ---------- 15. SCROLL-REVEAL ANIMATION ---------- */
 .fade-in {
   opacity: 0;
   transform: translateY(24px);
@@ -854,13 +1040,14 @@ button:focus-visible {
   transform: translateY(0);
 }
 
-/* ---------- 15. RESPONSIVE BREAKPOINTS ---------- */
+/* ---------- 16. RESPONSIVE BREAKPOINTS ---------- */
 @media (max-width: 1024px) {
   .hero__inner { grid-template-columns: 1fr; }
   .status-panel { max-width: 480px; }
   .about__grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: repeat(2, 1fr); }
   .skill-card--wide { grid-column: span 2; }
+  .project-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 860px) {
@@ -876,7 +1063,9 @@ button:focus-visible {
   :root { --space-6: 3rem; --space-7: 4rem; }
 
   .hero { min-height: auto; padding-top: calc(var(--nav-height) + var(--space-4)); }
-  .hero__name { font-size: 2.4rem; }
+  .hero__name { font-size: 2.1rem; }
+  .hero__portrait { width: 76px; height: 76px; border-radius: var(--radius-md); }
+  .hero__intro { gap: var(--space-2); }
   .status-panel__stats { grid-template-columns: 1fr; }
 
   .skills-grid { grid-template-columns: 1fr; }
@@ -884,6 +1073,8 @@ button:focus-visible {
 
   .about__stats { grid-template-columns: 1fr; }
   .credentials-grid { grid-template-columns: 1fr; }
+  .project-grid { grid-template-columns: 1fr; }
+  .filter-bar { gap: 0.4rem; }
 
   .timeline::before { left: 10px; }
   .ticket { grid-template-columns: 1fr; }
