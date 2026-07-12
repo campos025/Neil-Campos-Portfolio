@@ -10,6 +10,7 @@
      7. Footer year
      8. Project filter tabs
      9. Project lightbox modal
+     10. Dark mode toggle
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -225,6 +226,30 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
       closeLightbox();
+    }
+  });
+
+  /* ---------- 10. Dark mode toggle ---------- */
+  const THEME_STORAGE_KEY = 'nc-portfolio-theme';
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+
+  function setThemeToggleState(theme) {
+    themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+  }
+
+  // The inline script in <head> already set data-theme before paint —
+  // just sync the button's state to match on load.
+  setThemeToggleState(root.getAttribute('data-theme') || 'light');
+
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', nextTheme);
+    setThemeToggleState(nextTheme);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (e) {
+      /* localStorage unavailable — theme just won't persist across visits */
     }
   });
 });
