@@ -10,7 +10,8 @@
      7. Footer year
      8. Project filter tabs
      9. Project lightbox modal
-     10. Dark mode toggle
+     10. Auto website screenshot previews
+     11. Dark mode toggle
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -184,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- 9. Project lightbox modal ---------- */
   const lightbox = document.getElementById('lightbox');
+  const lightboxThumb = document.getElementById('lightbox-thumb');
   const lightboxTitle = document.getElementById('lightbox-title');
   const lightboxDesc = document.getElementById('lightbox-desc');
   const lightboxLink = document.getElementById('lightbox-link');
@@ -193,6 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
     lastFocusedCard = card;
     lightboxTitle.textContent = card.dataset.title || 'Project';
     lightboxDesc.textContent = card.dataset.desc || '';
+
+    const thumb = card.dataset.thumb;
+    if (thumb) {
+      lightboxThumb.src = thumb;
+      lightboxThumb.alt = card.dataset.title || '';
+      lightboxThumb.classList.remove('is-hidden');
+    } else {
+      lightboxThumb.classList.add('is-hidden');
+    }
 
     const link = card.dataset.link;
     if (link) {
@@ -229,7 +240,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ---------- 10. Dark mode toggle ---------- */
+  /* ---------- 10. Auto website screenshot previews ----------
+     For any "web" category card with a real data-link filled in, replace its
+     thumbnail with a live screenshot instead of the manually-placed image.
+     Uses WordPress's free mShots service — no API key required. If the
+     screenshot ever fails to load, the card quietly falls back to its
+     original manual placeholder image. */
+  const AUTO_PREVIEW_WIDTH = 640;
+  const AUTO_PREVIEW_HEIGHT = 400;
+
+  function buildAutoPreviewUrl(siteUrl) {
+    return `https://s0.wp.com/mshots/v1/${encodeURIComponent(siteUrl)}?w=${AUTO_PREVIEW_WIDTH}&h=${AUTO_PREVIEW_HEIGHT}`;
+  }
+
+  document.querySelectorAll('.project-card[data-category="web"]').forEach((card) => {
+    const siteUrl = card.dataset.link;
+    if (!siteUrl) return; // no live link yet — keep the manual placeholder image
+
+    const img = card.querySelector('.project-card__thumb');
+    if (!img) return;
+
+    const fallbackSrc = img.getAttribute('src');
+    const previewUrl = buildAutoPreviewUrl(siteUrl);
+
+    // If the live screenshot fails to load, revert to the manual placeholder
+    img.addEventListener('error', () => { img.src = fallbackSrc; }, { once: true });
+
+    img.src = previewUrl;
+    card.dataset.thumb = previewUrl; // keeps the lightbox in sync with the live screenshot
+  });
+
+  /* ---------- 11. Dark mode toggle ---------- */
   const THEME_STORAGE_KEY = 'nc-portfolio-theme';
   const root = document.documentElement;
   const themeToggle = document.getElementById('theme-toggle');
